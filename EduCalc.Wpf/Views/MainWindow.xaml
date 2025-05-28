@@ -1,0 +1,322 @@
+﻿<Window x:Class="EduCalc.Wpf.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewModel="clr-namespace:EduCalc.ViewModels"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="EduCalc - Комплексная оценка образовательной системы" Height="800" Width="1200">
+
+    <!-- Определение стилей по умолчанию -->
+    <Window.Resources>
+        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}" />
+        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}" />
+        <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody1TextBlock}" />
+        <viewModel:MainViewModel x:Key="MainViewModel" />
+    </Window.Resources>
+    <Window.DataContext>
+        <Binding Source="{StaticResource MainViewModel}" />
+    </Window.DataContext>
+
+    <Grid Margin="16">
+        <!-- Заголовок -->
+        <TextBlock Text="Комплексная оценка образовательной системы"
+                   Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,16"/>
+
+        <!-- Табы с данными -->
+        <TabControl Margin="0,32,0,60">
+            <!-- Таб Материальная база -->
+            <TabItem Header="Материальная база">
+                <ScrollViewer Margin="16">
+                    <StackPanel>
+                        <materialDesign:Card Margin="0,0,0,16">
+                            <Grid Margin="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Общая площадь здания (м²):" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.TotalArea, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="0" Grid.Column="1" 
+                                         materialDesign:HintAssist.Hint="Площадь в м²"/>
+
+                                <TextBlock Text="Количество учеников:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.StudentCount, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="1" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="Число учеников"/>
+
+                                <TextBlock Text="Компьютеры:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.ComputerCount, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="2" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="Количество компьютеров"/>
+
+                                <TextBlock Text="Книги в библиотеке:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.BookCount, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="3" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="Количество книг"/>
+                            </Grid>
+                        </materialDesign:Card>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Таб Педагогические кадры -->
+            <TabItem Header="Педагогические кадры">
+                <ScrollViewer Margin="16">
+                    <StackPanel>
+                        <materialDesign:Card Margin="0,0,0,16">
+                            <Grid Margin="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Процент педагогов с высшим образованием (%):" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.TeachersWithHigherEdu, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="0" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+
+                                <TextBlock Text="Аттестованные педагоги (%):" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.CertifiedTeachers, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="1" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+
+                                <TextBlock Text="Молодые педагоги (&lt;35 лет):" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.JuniorTeachers, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="2" Grid.Column="1"/>
+
+                                <TextBlock Text="Опытные педагоги (35-50 лет):" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.MidCareerTeachers, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="3" Grid.Column="1"/>
+
+                                <TextBlock Text="Старшие педагоги (>50 лет):" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.SeniorTeachers, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="4" Grid.Column="1"/>
+                            </Grid>
+                        </materialDesign:Card>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Таб Организация обучения -->
+            <TabItem Header="Организация обучения">
+                <ScrollViewer Margin="16">
+                    <StackPanel>
+                        <materialDesign:Card Margin="0,0,0,16">
+                            <Grid Margin="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Средний балл ОГЭ по основным предметам:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.OGECoreAvg, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="0" Grid.Column="1"/>
+
+                                <TextBlock Text="Средний балл ОГЭ по выборочным предметам:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.OGEOptionalAvg, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="1" Grid.Column="1"/>
+
+                                <TextBlock Text="Средний балл ЕГЭ по основным предметам:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.EGECoreAvg, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="2" Grid.Column="1"/>
+
+                                <TextBlock Text="Средний балл ЕГЭ по выборочным предметам:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.EGEOptionalAvg, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="3" Grid.Column="1"/>
+
+                                <TextBlock Text="Выпускники с отличием:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.HonorsGraduates, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="4" Grid.Column="1"/>
+
+                                <TextBlock Text="Всего выпускников:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.TotalGraduates, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="5" Grid.Column="1"/>
+
+                                <TextBlock Text="Превышение нормативной наполняемости (%):" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.ExcessPercent, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="6" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+
+                                <TextBlock Text="Профильное обучение старшеклассников (%):" Grid.Row="7" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.ProfileSeniors, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="7" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+                                <TextBlock Text="Углубленное изучение предметов (%) (5-9 кл.):" Grid.Row="8" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.AdvancedJuniors, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="8" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+                            </Grid>
+                        </materialDesign:Card>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Таб Инновационная деятельность -->
+            <TabItem Header="Инновационная деятельность">
+                <ScrollViewer Margin="16">
+                    <StackPanel>
+                        <materialDesign:Card Margin="0,0,0,16">
+                            <Grid Margin="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Победители ВСОШ:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.VSOHWinners, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="0" Grid.Column="1"/>
+
+                                <TextBlock Text="Старшеклассники:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.SeniorStudents, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="1" Grid.Column="1"/>
+
+                                <TextBlock Text="Цифровые внеурочные активности (%):" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.DigitalClubs, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="2" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+
+                                <TextBlock Text="Дополнительное образование (%):" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.AdditionalEdu, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="3" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+
+                                <TextBlock Text="Профориентационные мероприятия (%):" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.CareerGuidance, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="4" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+
+                                <TextBlock Text="Проектная деятельность (%):" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.ProjectWork, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="5" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+                            </Grid>
+                        </materialDesign:Card>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Таб Когнитивные способности -->
+            <TabItem Header="Когнитивные способности">
+                <ScrollViewer Margin="16">
+                    <StackPanel>
+                        <materialDesign:Card Margin="0,0,0,16">
+                            <Grid Margin="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Краткосрочная память:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.ShortTermMemory, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="0" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+
+                                <TextBlock Text="Процессуальная память:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.ProceduralMemory, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="1" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+
+                                <TextBlock Text="Семантическая память:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.SemanticMemory, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="2" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+
+                                <TextBlock Text="Эпизодическая память:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.EpisodicMemory, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="3" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+
+                                <TextBlock Text="Креативность:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.Creativity, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="4" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+
+                                <TextBlock Text="Логическое мышление:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding System.Logic, UpdateSourceTrigger=PropertyChanged}" 
+                                         Grid.Row="5" Grid.Column="1"
+                                         materialDesign:HintAssist.Hint="0-100%"/>
+                            </Grid>
+                        </materialDesign:Card>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+
+        <!-- Панель управления -->
+        <DockPanel LastChildFill="False" Margin="0,0,0,0" VerticalAlignment="Bottom">
+            <Button Content="Рассчитать" 
+                    Command="{Binding CalculateCommand}" 
+                    DockPanel.Dock="Right"
+                    Width="120"
+                    Margin="8,8,16,16"/>
+
+            <Button Content="Импорт" 
+                    Command="{Binding ImportCommand}" 
+                    DockPanel.Dock="Right"
+                    Width="100"
+                    Margin="8,8,0,16"/>
+
+            <Button Content="Экспорт" 
+                    Command="{Binding ExportCommand}" 
+                    DockPanel.Dock="Right"
+                    Width="100"
+                    Margin="8,8,0,16"/>
+        </DockPanel>
+
+        <!-- Результаты -->
+        <TextBlock Text="{Binding CalculatedResults}" 
+                   Style="{StaticResource MaterialDesignTitleMediumTextBlock}"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom"
+                   Margin="16,0,16,40"/>
+    </Grid>
+</Window>
