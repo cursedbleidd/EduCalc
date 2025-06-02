@@ -296,19 +296,11 @@
             <Button Content="Рассчитать" 
                     Command="{Binding CalculateCommand}" 
                     DockPanel.Dock="Right"
-                    Width="120"
                     Margin="8,8,16,16"/>
 
-            <Button Content="Импорт" 
-                    Command="{Binding ImportCommand}" 
+            <Button Content="Рекомендации" 
+                    Command="{Binding ShowRecommendationsCommand}" 
                     DockPanel.Dock="Right"
-                    Width="100"
-                    Margin="8,8,0,16"/>
-
-            <Button Content="Экспорт" 
-                    Command="{Binding ExportCommand}" 
-                    DockPanel.Dock="Right"
-                    Width="100"
                     Margin="8,8,0,16"/>
         </DockPanel>
 

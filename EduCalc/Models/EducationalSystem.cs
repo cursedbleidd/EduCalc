@@ -10,34 +10,113 @@ namespace EduCalc.Models;
 public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
 {
     private Dictionary<string, List<string>> _errors = new();
-
+    private readonly CompositeNode _root;
+    
+    public CompositeNode Root => _root;
     public event PropertyChangedEventHandler PropertyChanged;
     public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-
+    
     public bool HasErrors => _errors.Any();
 
-    public IEnumerable GetErrors(string propertyName)
+    public EducationalSystem()
     {
-        if (_errors.TryGetValue(propertyName, out List<string> errors) && errors != null)
-            return errors;
-        return Enumerable.Empty<string>();
+        _root = new CompositeNode("Root", new[] { 0.25, 0.25, 0.25, 0.25 });
+        InitializeTree();
+    }
+
+    private void InitializeTree()
+    {
+        // Компонент F (Материальная база)
+        var fNode = new CompositeNode("F", new[] { 0.5, 0.5 });
+        var f1Node = new CompositeNode("f1", new[] { 0.33, 0.33, 0.33 });
+        var f2Node = new CompositeNode("f2", new[] { 0.25, 0.5, 0.25 });
+
+        // Листья для f1
+        var totalAreaPerStudent = new TreeNode("TotalAreaPerStudent", () => TotalArea / StudentCount * 4);
+        var computerPerStudent = new TreeNode("ComputerPerStudent", () => (ComputerCount / (double)StudentCount) * 300);
+        var bookPerStudent = new TreeNode("BookPerStudent", () => Math.Min((BookCount / (double)StudentCount) * 100, 100));
+
+        f1Node.Children.Add(totalAreaPerStudent);
+        f1Node.Children.Add(computerPerStudent);
+        f1Node.Children.Add(bookPerStudent);
+
+        // Листья для f2
+        var teachersEdu = new TreeNode("TeachersWithHigherEdu", () => TeachersWithHigherEdu);
+        var certifiedTeachers = new TreeNode("CertifiedTeachers", () => CertifiedTeachers);
+        var teachersAge = new TreeNode("TeachersAge", () => {
+            double total = JuniorTeachers + MidCareerTeachers + SeniorTeachers;
+            return 100 - (Math.Abs(MidCareerTeachers - JuniorTeachers) / total) * 100
+                     - (Math.Abs(MidCareerTeachers - SeniorTeachers) / total) * 100;
+        });
+
+        f2Node.Children.Add(teachersEdu);
+        f2Node.Children.Add(certifiedTeachers);
+        f2Node.Children.Add(teachersAge);
+
+        fNode.Children.Add(f1Node);
+        fNode.Children.Add(f2Node);
+
+        // Компонент G (Организация обучения)
+        var gNode = new CompositeNode("G", new[] { 0.4, 0.2, 0.2, 0.2 });
         
+        var examScores = new TreeNode("ExamScores", () => 
+            0.25 * (OGECoreAvg + OGEOptionalAvg + EGECoreAvg + EGEOptionalAvg));
+        var honors = new TreeNode("Honors", () => 
+            (HonorsGraduates / (double)TotalGraduates) * 100 * 5);
+        var capacity = new TreeNode("Capacity", () => 
+            ExcessPercent == 0 ? 100 : 100 - ExcessPercent);
+        var profile = new TreeNode("Profile", () => {
+            double val = ProfileSeniors / 100 * 3 * AdvancedJuniors;
+            return Math.Max(50, Math.Min(100, val));
+        });
+
+        gNode.Children.Add(examScores);
+        gNode.Children.Add(honors);
+        gNode.Children.Add(capacity);
+        gNode.Children.Add(profile);
+
+        // Компонент H (Инновационная деятельность)
+        var hNode = new CompositeNode("H", new[] { 0.33, 0.33, 0.33 });
+        
+        var olympiadSuccess = new TreeNode("OlympiadSuccess", () => 
+            (VSOHWinners / (double)SeniorStudents) * 100 * 10);
+        var digitalClubs = new TreeNode("DigitalClubs", () => DigitalClubs);
+        var additionalEdu = new TreeNode("AdditionalEdu", () => AdditionalEdu);
+        var careerGuidance = new TreeNode("CareerGuidance", () => CareerGuidance);
+        var projectWork = new TreeNode("ProjectWork", () => ProjectWork);
+        var arr = new[] { olympiadSuccess, digitalClubs, additionalEdu, careerGuidance, projectWork };
+        // H берет три лучших показателя
+        foreach (var q in arr)
+            hNode.Children.Add(q);
+
+        // Компонент Y (Когнитивные способности)
+        var yNode = new CompositeNode("Y", new[] { 0.33, 0.33, 0.33 });
+        
+        var memory = new CompositeNode("Memory", new[] { 0.25, 0.25, 0.25, 0.25 });
+        var shortTerm = new TreeNode("ShortTermMemory", () => ShortTermMemory);
+        var procedural = new TreeNode("ProceduralMemory", () => ProceduralMemory);
+        var semantic = new TreeNode("SemanticMemory", () => SemanticMemory);
+        var episodic = new TreeNode("EpisodicMemory", () => EpisodicMemory);
+
+        memory.Children.Add(shortTerm);
+        memory.Children.Add(procedural);
+        memory.Children.Add(semantic);
+        memory.Children.Add(episodic);
+
+        var creativity = new TreeNode("Creativity", () => Creativity);
+        var logic = new TreeNode("Logic", () => Logic);
+
+        yNode.Children.Add(memory);
+        yNode.Children.Add(creativity);
+        yNode.Children.Add(logic);
+
+        _root.Children.Add(fNode);
+        _root.Children.Add(gNode);
+        _root.Children.Add(hNode);
+        _root.Children.Add(yNode);
     }
 
-    public void AddError(string propertyName, string error)
-    {
-        if (!_errors.ContainsKey(propertyName)) _errors[propertyName] = new List<string>();
-        if (!_errors[propertyName].Contains(error)) _errors[propertyName].Add(error);
-        ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-    }
-
-    public void ClearErrors(string propertyName)
-    {
-        if (_errors.Remove(propertyName))
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-    }
-
-    // Материальная база (f1)
+    // Свойства для ввода данных
     private double _totalArea;
     public double TotalArea
     {
@@ -90,7 +169,7 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         set
         {
             if (value < 0)
-                AddError(nameof(BookCount), "Количество книг не может быть отрицательным");
+                AddError(nameof(BookCount), "Количество книг не может быть отрицательной");
             else
                 ClearErrors(nameof(BookCount));
             _bookCount = value;
@@ -493,84 +572,16 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
     }
 
     // Вычисляемые параметры
-    public double F => CalculateF();
-    public double G => CalculateG();
-    public double H => CalculateH();
-    public double Y => CalculateY();
+    public double F => _root.Children[0].CalculatedValue;
+    public double G => _root.Children[1].CalculatedValue;
+    public double H => _root.Children[2].CalculatedValue;
+    public double Y => _root.Children[3].CalculatedValue;
     public string S => DetermineS();
-
-    private double CalculateF() 
-    {
-        // f11 = (TotalArea / StudentCount) * 4
-        double f11 = (TotalArea / StudentCount) * 4;
-
-        // f12 = (ComputerCount / StudentCount) * 300
-        double f12 = (ComputerCount / (double)StudentCount) * 300;
-
-        // f13 = (BookCount / StudentCount) * 100 (если >26 → 100)
-        double f13 = (BookCount / (double)StudentCount) * 100;
-        if (f13 > 100) f13 = 100;
-
-        // f1 = 0.33*f11 + 0.33*f12 + 0.33*f13
-        double f1 = 0.33 * f11 + 0.33 * f12 + 0.33 * f13;
-
-        // f23 = 100 - ((n2 - n1)/TotalTeachers)*100 - ((n3 - n2)/TotalTeachers)*100
-        double totalTeachers = JuniorTeachers + MidCareerTeachers + SeniorTeachers;
-        double f23 = 100 - (Math.Abs(MidCareerTeachers - JuniorTeachers) / totalTeachers) * 100
-                     - (Math.Abs(MidCareerTeachers - SeniorTeachers) / totalTeachers) * 100;
-
-        // f2 = 0.25*f21 + 0.5*f22 + 0.25*f23
-        double f2 = 0.25 * TeachersWithHigherEdu + 0.5 * CertifiedTeachers + 0.25 * f23;
-
-        // F = 0.5*f1 + 0.5*f2
-        return 0.5 * f1 + 0.5 * f2;
-    }
-
-    private double CalculateG()
-    {
-        // g1 = 0.25*(OGECoreAvg + OGEOptionalAvg + EGECoreAvg + EGEOptionalAvg)
-        double g1 = 0.25 * (OGECoreAvg + OGEOptionalAvg + EGECoreAvg + EGEOptionalAvg);
-
-        // g2 = (HonorsGraduates / TotalGraduates) * 100 * 5
-        double g2 = (HonorsGraduates / (double)TotalGraduates) * 100 * 5;
-
-        // g3 = 100 - ExcessPercent
-        double g3 = ExcessPercent == 0 ? 100 : 100 - ExcessPercent;
-
-        // g4 = sqrt(ProfileSeniors * AdvancedJuniors)
-        double g4 = ProfileSeniors / 100 * 3 * AdvancedJuniors;
-        if (g4 < 50)
-            g4 = 50;
-        else if (g4 > 100)
-            g4 = 100;
-
-        // G = 0.4*g1 + 0.2*g2 + 0.2*g3 + 0.2*g4
-        return 0.4 * g1 + 0.2 * g2 + 0.2 * g3 + 0.2 * g4;
-    }
-
-    private double CalculateH()
-    {
-        // h1 = (VSOHWinners / SeniorStudents) * 100 * 10
-        double h1 = (VSOHWinners / (double)SeniorStudents) * 100 * 10;
-
-        // h2 = DigitalClubs, h3 = AdditionalEdu, h4 = CareerGuidance, h5 = ProjectWork
-        double[] hValues = { h1, DigitalClubs, AdditionalEdu, CareerGuidance, ProjectWork };
-        Array.Sort(hValues);
-        Array.Reverse(hValues);
-        return (hValues[0] + hValues[1] + hValues[2]) / 3;
-    }
-
-    private double CalculateY()
-    {
-        // y1 = 0.25*(ShortTermMemory + ProceduralMemory + SemanticMemory + EpisodicMemory)
-        double y1 = 0.25 * (ShortTermMemory + ProceduralMemory + SemanticMemory + EpisodicMemory);
-        double y2 = Creativity;
-        double y3 = Logic;
-        return 0.33 * y1 + 0.33 * y2 + 0.33 * y3;
-    }
 
     private string DetermineS()
     {
+        if (HasErrors) return "Есть ошибки ввода";
+
         bool yHigh = Y >= 80;
         bool yAboveAvg = Y >= 60;
         bool yAvg = Y >= 40;
@@ -589,7 +600,6 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
             else if (val >= 20) countFghBelowAvg++;
         }
 
-        // Правила из таблицы 1 статьи
         if (yHigh && countFghHigh >= 2)
             return "Высокий";
         if ((yHigh || yAboveAvg) && countFghAboveAvg >= 2)
@@ -599,6 +609,54 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         if ((yBelowAvg && countFghAvg == 0) || countFghBelowAvg == 1)
             return "Ниже среднего";
         return "Низкий";
+    }
+
+    public Dictionary<string, (double coefficient, double value)> CompressTree()
+    {
+        var result = new Dictionary<string, (double, double)>();
+        CompressNode(_root, result, 1.0);
+        return result;
+    }
+
+    private void CompressNode(TreeNode node, Dictionary<string, (double, double)> result, double parentCoefficient)
+    {
+        if (node is CompositeNode composite)
+        {
+            for (int i = 0; i < composite.Children.Count; i++)
+            {
+                var child = composite.Children[i];
+                var coefficient = composite.Coefficients[i] * parentCoefficient;
+                CompressNode(child, result, coefficient);
+            }
+        }
+        else
+        {
+            result[node.Name] = (parentCoefficient, node.Value);
+        }
+    }
+
+    public IEnumerable GetErrors(string propertyName)
+    {
+        if (_errors.TryGetValue(propertyName, out List<string> errors))
+            return errors;
+        return Enumerable.Empty<string>();
+    }
+
+    public void AddError(string propertyName, string error)
+    {
+        if (!_errors.ContainsKey(propertyName)) 
+            _errors[propertyName] = new List<string>();
+        if (!_errors[propertyName].Contains(error))
+        {
+            _errors[propertyName].Add(error);
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+    }
+
+    public void ClearErrors(string propertyName)
+    {
+        if (_errors.Remove(propertyName))
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
     }
 
     protected void OnPropertyChanged([CallerMemberName] string name = null) =>
