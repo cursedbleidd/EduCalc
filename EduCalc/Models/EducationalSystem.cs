@@ -59,8 +59,7 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         // Компонент G (Организация обучения)
         var gNode = new CompositeNode("G", new[] { 0.4, 0.2, 0.2, 0.2 });
         
-        var examScores = new TreeNode("ExamScores", () => 
-            0.25 * (OGECoreAvg + OGEOptionalAvg + EGECoreAvg + EGEOptionalAvg));
+        var examScores = new CompositeNode("ExamScores", new[] { 0.25, 0.25, 0.25, 0.25 });
         var honors = new TreeNode("Honors", () => 
             (HonorsGraduates / (double)TotalGraduates) * 100 * 5);
         var capacity = new TreeNode("Capacity", () => 
@@ -70,6 +69,8 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
             return Math.Max(50, Math.Min(100, val));
         });
 
+        // fix it
+        examScores.Children.Add((OGECoreAvg + OGEOptionalAvg + EGECoreAvg + EGEOptionalAvg));
         gNode.Children.Add(examScores);
         gNode.Children.Add(honors);
         gNode.Children.Add(capacity);
@@ -114,6 +115,13 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         _root.Children.Add(gNode);
         _root.Children.Add(hNode);
         _root.Children.Add(yNode);
+    }
+    public Dictionary<string, double> GetRecomendations(TreeNode node, double targetScore)
+    {
+        double diffScore = targetScore - node.CalculatedValue;
+        var dict = node.GetWeightsWithNames();
+        double coef = diffScore / dict.Values.Sum(d => d * d);
+        return dict.ToDictionary(kv => kv.Key, kv => kv.Value * coef);
     }
 
     // Свойства для ввода данных

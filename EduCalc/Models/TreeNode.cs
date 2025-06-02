@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -41,4 +42,26 @@ public class TreeNode : INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+    internal Dictionary<string, double> GetWeightsWithNames()
+    {
+        Dictionary<string, double> weights = new();
+        if (this is not CompositeNode node)
+        {
+            if (this.CalculatedValue < 100.0)
+                weights[Name] = 1.0;
+            return weights;
+        }
+
+        for (int i = 0; i < node.Coefficients.Length; i++)
+        {
+            var vals = node.Children[i].GetWeightsWithNames();
+            foreach (var val in vals)
+            {
+                weights[val.Key] = val.Value * node.Coefficients[i];
+            }
+        }
+        
+        return weights;
+    }
 }

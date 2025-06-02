@@ -23,7 +23,12 @@ namespace EduCalc.Tests
                 MidCareerTeachers = 23,
                 SeniorTeachers = 19
             };
+            //new
+            var F = system.Root.Children.First(c => c.Name == "F");
 
+            var hold = system.GetRecomendations(F, 80);
+
+            //old
             Assert.That(system.F, Is.EqualTo(66.57).Within(0.01));
         }
 
@@ -42,7 +47,12 @@ namespace EduCalc.Tests
                 ProfileSeniors = 100,
                 AdvancedJuniors = 0
             };
+            //new
+            var G = system.Root.Children.First(c => c.Name == "G");
 
+            var hold = system.GetRecomendations(G, 80);
+
+            //old
             Assert.That(system.G, Is.EqualTo(57.65).Within(0.01));
         }
 
@@ -58,13 +68,19 @@ namespace EduCalc.Tests
                 CareerGuidance = 89.83,
                 ProjectWork = 4.99
             };
+            //new
+            var H = system.Root.Children.First(c => c.Name == "H");
 
+            var hold = system.GetRecomendations(H, 80);
+
+            //old
             Assert.That(system.H, Is.EqualTo(68.61).Within(0.01));
         }
 
         [Test]
         public void CalculateY_ReturnsCorrectValue()
         {
+            //old
             var system = new EducationalSystem
             {
                 ShortTermMemory = 45.56,
@@ -74,7 +90,12 @@ namespace EduCalc.Tests
                 Creativity = 66.87,
                 Logic = 65.9
             };
+            //new
+            var Y = system.Root.Children.First(c => c.Name == "Y");
 
+            var hold = system.GetRecomendations(Y, 80);
+
+            //old
             Assert.That(system.Y, Is.EqualTo(60.23).Within(0.01));
         }
 
