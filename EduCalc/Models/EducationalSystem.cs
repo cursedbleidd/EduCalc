@@ -60,6 +60,16 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         var gNode = new CompositeNode("G", new[] { 0.4, 0.2, 0.2, 0.2 });
         
         var examScores = new CompositeNode("ExamScores", new[] { 0.25, 0.25, 0.25, 0.25 });
+        var ogeCore = new TreeNode("OGECore", () => OGECoreAvg);
+        var ogeOptional = new TreeNode("OGEOptional", () => OGEOptionalAvg);
+        var egeCore = new TreeNode("EGECore", () => EGECoreAvg);
+        var egeOptional = new TreeNode("EGEOptional", () => EGEOptionalAvg);
+
+        examScores.Children.Add(ogeCore);
+        examScores.Children.Add(ogeOptional);
+        examScores.Children.Add(egeCore);
+        examScores.Children.Add(egeOptional);
+
         var honors = new TreeNode("Honors", () => 
             (HonorsGraduates / (double)TotalGraduates) * 100 * 5);
         var capacity = new TreeNode("Capacity", () => 
@@ -69,8 +79,6 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
             return Math.Max(50, Math.Min(100, val));
         });
 
-        // fix it
-        examScores.Children.Add((OGECoreAvg + OGEOptionalAvg + EGECoreAvg + EGEOptionalAvg));
         gNode.Children.Add(examScores);
         gNode.Children.Add(honors);
         gNode.Children.Add(capacity);

@@ -50,7 +50,7 @@ namespace EduCalc.Tests
             //new
             var G = system.Root.Children.First(c => c.Name == "G");
 
-            var hold = system.GetRecomendations(G, 80);
+            var hold = system.GetRecomendations(G, 60);
 
             //old
             Assert.That(system.G, Is.EqualTo(57.65).Within(0.01));
