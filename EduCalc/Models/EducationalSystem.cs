@@ -85,7 +85,7 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         gNode.Children.Add(profile);
 
         // Компонент H (Инновационная деятельность)
-        var hNode = new CompositeNode("H", new[] { 0.33, 0.33, 0.33 });
+        var hNode = new CompositeNode("H", new[] { 1.0 / 3, 1.0 / 3, 1.0 / 3 });
         
         var olympiadSuccess = new TreeNode("OlympiadSuccess", () => 
             (VSOHWinners / (double)SeniorStudents) * 100 * 10);
@@ -123,13 +123,6 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         _root.Children.Add(gNode);
         _root.Children.Add(hNode);
         _root.Children.Add(yNode);
-    }
-    public Dictionary<string, double> GetRecomendations(TreeNode node, double targetScore)
-    {
-        double diffScore = targetScore - node.CalculatedValue;
-        var dict = node.GetWeightsWithNames();
-        double coef = diffScore / dict.Values.Sum(d => d * d);
-        return dict.ToDictionary(kv => kv.Key, kv => kv.Value * coef);
     }
 
     // Свойства для ввода данных

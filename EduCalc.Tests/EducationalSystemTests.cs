@@ -26,7 +26,7 @@ namespace EduCalc.Tests
             //new
             var F = system.Root.Children.First(c => c.Name == "F");
 
-            var hold = system.GetRecomendations(F, 80);
+            var hold = F.GetRecomendations(80);
 
             //old
             Assert.That(system.F, Is.EqualTo(66.57).Within(0.01));
@@ -50,7 +50,7 @@ namespace EduCalc.Tests
             //new
             var G = system.Root.Children.First(c => c.Name == "G");
 
-            var hold = system.GetRecomendations(G, 60);
+            var hold = G.GetRecomendations(60);
 
             //old
             Assert.That(system.G, Is.EqualTo(57.65).Within(0.01));
@@ -71,7 +71,7 @@ namespace EduCalc.Tests
             //new
             var H = system.Root.Children.First(c => c.Name == "H");
 
-            var hold = system.GetRecomendations(H, 80);
+            var hold = H.GetRecomendations(80);
 
             //old
             Assert.That(system.H, Is.EqualTo(68.61).Within(0.01));
@@ -93,8 +93,32 @@ namespace EduCalc.Tests
             //new
             var Y = system.Root.Children.First(c => c.Name == "Y");
 
-            var hold = system.GetRecomendations(Y, 80);
+            var hold = Y.GetRecomendations(80);
 
+            //old
+            Assert.That(system.Y, Is.EqualTo(60.23).Within(0.01));
+        }
+        [Test]
+        public void CalculateY_ReturnsCorrectValue2()
+        {
+            //old
+            var system = new EducationalSystem
+            {
+                ShortTermMemory = 45.56,
+                ProceduralMemory = 54.8,
+                SemanticMemory = 48.68,
+                EpisodicMemory = 49.86,
+                Creativity = 66.87,
+                Logic = 96.0
+            };
+            //new
+            var Y = system.Root.Children.First(c => c.Name == "Y");
+
+            var hold = Y.GetRecomendations(80);
+
+            var arr = hold.Values.ToArray();
+
+            var sum = 0.33 * (arr[0].Inc + arr[0].Value + 0.25 * (arr[1].Inc + arr[1].Value + arr[2].Inc + arr[2].Value + arr[3].Inc + arr[3].Value + arr[4].Inc + arr[4].Value) + arr[5].Inc + arr[5].Value);
             //old
             Assert.That(system.Y, Is.EqualTo(60.23).Within(0.01));
         }
