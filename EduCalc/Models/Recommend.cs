@@ -8,6 +8,8 @@ namespace EduCalc.Models
 {
     public class Recommend
     {
+        public string Name { get; set; }
+        public string Description { get; set; }
         public double Inc { get; set; }
         public double Coef { get; set; }
         public double Value { get; set; }

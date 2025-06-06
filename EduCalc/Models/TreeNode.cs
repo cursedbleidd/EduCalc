@@ -44,68 +44,62 @@ public class TreeNode : INotifyPropertyChanged
     protected void OnPropertyChanged([CallerMemberName] string name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-    protected Dictionary<string, Recommend> GetWeightsWithNames(Dictionary<string, Recommend> dict = null)
+    protected List<Recommend> GetWeightsWithNames(List<Recommend> list = null)
     {
-        Dictionary<string, Recommend> weights = new();
+        List<Recommend> weights = new();
 
         if (this is not CompositeNode node)
         {
-            if (this.CalculatedValue < 100.0 && (dict is null || !dict.ContainsKey(Name)))
-                weights[Name] = new Recommend() { Coef = 1.0, Value = CalculatedValue };
+            if (this.CalculatedValue < 100.0 && (list is null || !list.Any(r => r.Name == Name)))
+                weights.Add(new Recommend() { Name = this.Name, Coef = 1.0, Value = CalculatedValue });
             return weights;
         }
 
         var childs = node.Children.OrderByDescending(c => c.CalculatedValue).ToArray();
         for (int i = 0; i < node.Coefficients.Length; i++)
         {
-            var vals = childs[i].GetWeightsWithNames(dict);
+            var vals = childs[i].GetWeightsWithNames(list);
             foreach (var val in vals)
             {
-                val.Value.Coef *= node.Coefficients[i];
-                weights[val.Key] = val.Value;
+                val.Coef *= node.Coefficients[i];
+                weights.Add(val);
             }
         }
         
         return weights;
     }
-    public Dictionary<string, Recommend> GetRecomendations(double targetScore)
+    public List<Recommend> GetRecomendations(double targetScore)
     {
         double diffScore = targetScore - CalculatedValue;
-        var dict = GetWeightsWithNames();
-        double coef = diffScore / dict.Values.Sum(d => d.Coef * d.Coef);
-        foreach (var kvp in dict)
+        var list = GetWeightsWithNames();
+        double coef = diffScore / list.Sum(d => d.Coef * d.Coef);
+        foreach (var kvp in list)
         {
-            kvp.Value.Inc = coef * kvp.Value.Coef;
+            kvp.Inc = coef * kvp.Coef;
         }
 
-        var above = dict.Where(kv => kv.Value.Inc + kv.Value.Value > 100.0);
+        var above = list.Where(kv => kv.Inc + kv.Value > 100.0);
 
-        Dictionary<string, Recommend> addToResult = new();
+        List<Recommend> addToResult = new();
         while (above.Any())
         {
-            var hundredDict = above.ToDictionary();
+            var hundredDict = above.ToList();
             foreach (var kvp in hundredDict)
             {
-                kvp.Value.Inc = 100.0 - kvp.Value.Value;
+                kvp.Inc = 100.0 - kvp.Value;
             }
-            diffScore -= hundredDict.Sum(kvp => kvp.Value.Inc * kvp.Value.Coef);
-            dict = GetWeightsWithNames(hundredDict);
-            coef = diffScore / dict.Values.Sum(d => d.Coef * d.Coef);
-            foreach (var kvp in dict)
+            diffScore -= hundredDict.Sum(kvp => kvp.Inc * kvp.Coef);
+            list = GetWeightsWithNames(hundredDict);
+            coef = diffScore / list.Sum(d => d.Coef * d.Coef);
+            foreach (var kvp in list)
             {
-                kvp.Value.Inc = coef * kvp.Value.Coef;
+                kvp.Inc = coef * kvp.Coef;
             }
-            foreach (var item in hundredDict)
-            {
-                addToResult[item.Key] = item.Value;
-            }
+            addToResult.AddRange(hundredDict);
         }
 
-        foreach (var item in addToResult)
-        {
-            dict[item.Key] = item.Value;
-        }
+        list.AddRange(addToResult);
 
-        return dict;
+        return list;
     }
 }

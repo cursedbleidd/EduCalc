@@ -587,6 +587,47 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
     public double Y => _root.Children[3].CalculatedValue;
     public string S => DetermineS();
 
+    public void CalcRecommendations(string targetLevel)
+    {
+        List<Recommend> recommendations = new List<Recommend>();
+        int targetY, targetF, targetG, targetH;
+        List<TreeNode> nodes = [_root.Children[0], _root.Children[1], _root.Children[2]];
+        switch (targetLevel)
+        {
+            case "Высокий":
+                if (Y < 80)
+                    recommendations.AddRange(_root.Children[3].GetRecomendations(80));
+                var topNodes = nodes.Where(n => n.CalculatedValue < 80).OrderByDescending(n => n.CalculatedValue);
+                var aboveAvg = nodes.Count(n => n.CalculatedValue >= 60);
+                var avg = nodes.Count(n => n.CalculatedValue < 60);
+                if (!(aboveAvg <= 1 && avg == 0))
+                {
+                    foreach (var node in topNodes.Take(aboveAvg + avg - 1))
+                    {
+                        recommendations.AddRange(node.GetRecomendations(80));
+                    }
+                    if (topNodes.Last().CalculatedValue < 60)
+                        recommendations.AddRange(topNodes.Last().GetRecomendations(60));
+                }
+                break;                    
+            case "Выше среднего":
+                nodes.Add(_root.Children[3]);
+                recommendations.AddRange(CalcAll(60, nodes));
+                break;
+            case "Средний":
+                nodes.Add(_root.Children[3]);
+                recommendations.AddRange(CalcAll(40, nodes));
+                break;
+            case "Ниже среднего":
+                nodes.Add(_root.Children[3]);
+                recommendations.AddRange(CalcAll(20, nodes));
+                break;
+            case "Низкий":
+                break;
+        }
+    }
+    public List<Recommend> CalcAll(double targetScore, List<TreeNode> nodes) => nodes.SelectMany(n => n.GetRecomendations(targetScore)).ToList();
+
     private string DetermineS()
     {
         if (HasErrors) return "Есть ошибки ввода";
