@@ -2,7 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:viewModel="clr-namespace:EduCalc.ViewModels"
+        xmlns:DataContext="{d:DesignInstance Type=viewModel:MainViewModel}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -17,6 +19,7 @@
         <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}" />
         <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}" />
         <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody1TextBlock}" />
+        <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}" />
         <viewModel:MainViewModel x:Key="MainViewModel" />
     </Window.Resources>
     <Window.DataContext>
@@ -290,18 +293,25 @@
                 </ScrollViewer>
             </TabItem>
         </TabControl>
+        
 
         <!-- Панель управления -->
         <DockPanel LastChildFill="False" Margin="0,0,0,0" VerticalAlignment="Bottom">
             <Button Content="Рассчитать" 
                     Command="{Binding CalculateCommand}" 
                     DockPanel.Dock="Right"
-                    Margin="8,8,16,16"/>
+                    Margin="8"/>
 
             <Button Content="Рекомендации" 
                     Command="{Binding ShowRecommendationsCommand}" 
                     DockPanel.Dock="Right"
-                    Margin="8,8,0,16"/>
+                    Margin="8"/>
+            <ComboBox DockPanel.Dock="Right"
+                      Margin="8"
+                      ItemsSource="{Binding Levels}" 
+                      SelectedItem="{Binding SelectedLevel, UpdateSourceTrigger=PropertyChanged}"
+                      materialDesign:HintAssist.Hint="Желаемый уровень">
+            </ComboBox>
         </DockPanel>
 
         <!-- Результаты -->

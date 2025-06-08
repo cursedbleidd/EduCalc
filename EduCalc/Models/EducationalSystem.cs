@@ -32,18 +32,18 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         var f2Node = new CompositeNode("f2", new[] { 0.25, 0.5, 0.25 });
 
         // Листья для f1
-        var totalAreaPerStudent = new TreeNode("TotalAreaPerStudent", () => TotalArea / StudentCount * 4);
-        var computerPerStudent = new TreeNode("ComputerPerStudent", () => (ComputerCount / (double)StudentCount) * 300);
-        var bookPerStudent = new TreeNode("BookPerStudent", () => Math.Min((BookCount / (double)StudentCount) * 100, 100));
+        var totalAreaPerStudent = new TreeNode("TotalAreaPerStudent", "f11", "Площадь здания на ученика", () => TotalArea / StudentCount * 4);
+        var computerPerStudent = new TreeNode("ComputerPerStudent", "f12", "Компьютеров на 300 учеников", () => (ComputerCount / (double)StudentCount) * 300);
+        var bookPerStudent = new TreeNode("BookPerStudent", "f13", "Книг на ученика", () => Math.Min((BookCount / (double)StudentCount) * 100, 100));
 
         f1Node.Children.Add(totalAreaPerStudent);
         f1Node.Children.Add(computerPerStudent);
         f1Node.Children.Add(bookPerStudent);
 
         // Листья для f2
-        var teachersEdu = new TreeNode("TeachersWithHigherEdu", () => TeachersWithHigherEdu);
-        var certifiedTeachers = new TreeNode("CertifiedTeachers", () => CertifiedTeachers);
-        var teachersAge = new TreeNode("TeachersAge", () => {
+        var teachersEdu = new TreeNode("TeachersWithHigherEdu", "f21", "Процент учителей с высшим образованием", () => TeachersWithHigherEdu);
+        var certifiedTeachers = new TreeNode("CertifiedTeachers", "f22", "Процент аттестованных учителей", () => CertifiedTeachers);
+        var teachersAge = new TreeNode("TeachersAge", "f23", "Возрастной показатель учителей",() => {
             double total = JuniorTeachers + MidCareerTeachers + SeniorTeachers;
             return 100 - (Math.Abs(MidCareerTeachers - JuniorTeachers) / total) * 100
                      - (Math.Abs(MidCareerTeachers - SeniorTeachers) / total) * 100;
@@ -60,21 +60,21 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         var gNode = new CompositeNode("G", new[] { 0.4, 0.2, 0.2, 0.2 });
         
         var examScores = new CompositeNode("ExamScores", new[] { 0.25, 0.25, 0.25, 0.25 });
-        var ogeCore = new TreeNode("OGECore", () => OGECoreAvg);
-        var ogeOptional = new TreeNode("OGEOptional", () => OGEOptionalAvg);
-        var egeCore = new TreeNode("EGECore", () => EGECoreAvg);
-        var egeOptional = new TreeNode("EGEOptional", () => EGEOptionalAvg);
+        var ogeCore = new TreeNode("OGECore", "g11", "Средний балл ОГЭ по основным", () => OGECoreAvg);
+        var ogeOptional = new TreeNode("OGEOptional", "g12", "Средний балл ОГЭ (по выбору)", () => OGEOptionalAvg);
+        var egeCore = new TreeNode("EGECore", "g13", "Средний балл ЕГЭ по основным", () => EGECoreAvg);
+        var egeOptional = new TreeNode("EGEOptional", "g14", "Средний балл ЕГЭ (по выбору)", () => EGEOptionalAvg);
 
         examScores.Children.Add(ogeCore);
         examScores.Children.Add(ogeOptional);
         examScores.Children.Add(egeCore);
         examScores.Children.Add(egeOptional);
 
-        var honors = new TreeNode("Honors", () => 
+        var honors = new TreeNode("Honors", "g2", "Показатель отличников", () => 
             (HonorsGraduates / (double)TotalGraduates) * 100 * 5);
-        var capacity = new TreeNode("Capacity", () => 
+        var capacity = new TreeNode("Capacity", "g3", "Показатель переполнения", () => 
             ExcessPercent == 0 ? 100 : 100 - ExcessPercent);
-        var profile = new TreeNode("Profile", () => {
+        var profile = new TreeNode("Profile", "g4", "Показатель профильного образования", () => {
             double val = ProfileSeniors / 100 * 3 * AdvancedJuniors;
             return Math.Max(50, Math.Min(100, val));
         });
@@ -87,12 +87,12 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         // Компонент H (Инновационная деятельность)
         var hNode = new CompositeNode("H", new[] { 1.0 / 3, 1.0 / 3, 1.0 / 3 });
         
-        var olympiadSuccess = new TreeNode("OlympiadSuccess", () => 
+        var olympiadSuccess = new TreeNode("OlympiadSuccess", "h1", "Процент победителей ВсОШ", () => 
             (VSOHWinners / (double)SeniorStudents) * 100 * 10);
-        var digitalClubs = new TreeNode("DigitalClubs", () => DigitalClubs);
-        var additionalEdu = new TreeNode("AdditionalEdu", () => AdditionalEdu);
-        var careerGuidance = new TreeNode("CareerGuidance", () => CareerGuidance);
-        var projectWork = new TreeNode("ProjectWork", () => ProjectWork);
+        var digitalClubs = new TreeNode("DigitalClubs", "h2", "Процент вовлеченных в цифровые внеурочные активности", () => DigitalClubs);
+        var additionalEdu = new TreeNode("AdditionalEdu", "h3", "Процент вовлеченных в доп образование", () => AdditionalEdu);
+        var careerGuidance = new TreeNode("CareerGuidance", "h4", "Процент вовлеченных в проф.ориентационные мероприятия", () => CareerGuidance);
+        var projectWork = new TreeNode("ProjectWork", "h5", "Процент вовлеченных в проектную деятельность", () => ProjectWork);
         var arr = new[] { olympiadSuccess, digitalClubs, additionalEdu, careerGuidance, projectWork };
         // H берет три лучших показателя
         foreach (var q in arr)
@@ -102,18 +102,18 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         var yNode = new CompositeNode("Y", new[] { 0.33, 0.33, 0.33 });
         
         var memory = new CompositeNode("Memory", new[] { 0.25, 0.25, 0.25, 0.25 });
-        var shortTerm = new TreeNode("ShortTermMemory", () => ShortTermMemory);
-        var procedural = new TreeNode("ProceduralMemory", () => ProceduralMemory);
-        var semantic = new TreeNode("SemanticMemory", () => SemanticMemory);
-        var episodic = new TreeNode("EpisodicMemory", () => EpisodicMemory);
+        var shortTerm = new TreeNode("ShortTermMemory", "y11", "Короткосрочная память", () => ShortTermMemory);
+        var procedural = new TreeNode("ProceduralMemory", "y12", "Процессуальная память", () => ProceduralMemory);
+        var semantic = new TreeNode("SemanticMemory", "y13", "Семантическая память", () => SemanticMemory);
+        var episodic = new TreeNode("EpisodicMemory", "y14", "Эпизодическая память", () => EpisodicMemory);
 
         memory.Children.Add(shortTerm);
         memory.Children.Add(procedural);
         memory.Children.Add(semantic);
         memory.Children.Add(episodic);
 
-        var creativity = new TreeNode("Creativity", () => Creativity);
-        var logic = new TreeNode("Logic", () => Logic);
+        var creativity = new TreeNode("Creativity", "y2", "Креативность", () => Creativity);
+        var logic = new TreeNode("Logic", "y3", "Логика", () => Logic);
 
         yNode.Children.Add(memory);
         yNode.Children.Add(creativity);
@@ -587,10 +587,10 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
     public double Y => _root.Children[3].CalculatedValue;
     public string S => DetermineS();
 
-    public void CalcRecommendations(string targetLevel)
+    public List<Recommend> CalcRecommendations(string targetLevel)
     {
         List<Recommend> recommendations = new List<Recommend>();
-        int targetY, targetF, targetG, targetH;
+        
         List<TreeNode> nodes = [_root.Children[0], _root.Children[1], _root.Children[2]];
         switch (targetLevel)
         {
@@ -625,6 +625,8 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
             case "Низкий":
                 break;
         }
+
+        return recommendations;
     }
     public List<Recommend> CalcAll(double targetScore, List<TreeNode> nodes) => nodes.SelectMany(n => n.GetRecomendations(targetScore)).ToList();
 

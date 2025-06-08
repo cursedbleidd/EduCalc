@@ -10,6 +10,8 @@ public class TreeNode : INotifyPropertyChanged
     private double _value;
     private string _name;
     protected Func<double> _calculator;
+    public string Description { get; set; }
+    public string Id { get; set; }
 
     public string Name 
     {
@@ -34,9 +36,11 @@ public class TreeNode : INotifyPropertyChanged
 
     public double CalculatedValue => _calculator?.Invoke() ?? Value;
 
-    public TreeNode(string name, Func<double> calculator = null)
+    public TreeNode(string name, string id = null, string desc = null, Func<double> calculator = null)
     {
         Name = name;
+        Id = id;
+        Description = desc;
         _calculator = calculator;
     }
 
@@ -51,11 +55,16 @@ public class TreeNode : INotifyPropertyChanged
         if (this is not CompositeNode node)
         {
             if (this.CalculatedValue < 100.0 && (list is null || !list.Any(r => r.Name == Name)))
-                weights.Add(new Recommend() { Name = this.Name, Coef = 1.0, Value = CalculatedValue });
+                weights.Add(new Recommend() { Name = this.Name, Id = this.Id, Description = this.Description, Coef = 1.0, Value = CalculatedValue });
             return weights;
         }
 
-        var childs = node.Children.OrderByDescending(c => c.CalculatedValue).ToArray();
+        var childs = node.Children.ToArray();
+        if (childs.Length != node.Coefficients.Length)
+        {
+            childs = childs.OrderByDescending(c => c.CalculatedValue).ToArray();
+        }
+        
         for (int i = 0; i < node.Coefficients.Length; i++)
         {
             var vals = childs[i].GetWeightsWithNames(list);

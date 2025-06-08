@@ -5,13 +5,27 @@ using EduCalc.Wpf.Commands;
 using EduCalc.Models;
 using System.Collections.Generic;
 using EduCalc.Wpf.Views;
+using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace EduCalc.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
         private EducationalSystem _system = new();
-        
+        public ObservableCollection<string> Levels { get; set; } = [
+            "Ниже среднего", "Средний", "Выше среднего", "Высокий"
+        ];
+        private string _selectedLevel;
+        public string SelectedLevel 
+        { 
+            get => _selectedLevel; 
+            set
+            {
+                _selectedLevel = value;
+                OnPropertyChanged();
+            } 
+        }
         public TreeNode MaterialBase => _system.Root.Children[0];
         public TreeNode TeachingOrganization => _system.Root.Children[1];
         public TreeNode Innovation => _system.Root.Children[2];
@@ -50,7 +64,14 @@ namespace EduCalc.ViewModels
 
         private void ShowRecommendations()
         {
-            var recommendations = GenerateRecommendations();
+            LevelNode selectedLevel = LevelNodeExtensions.FromString(SelectedLevel);
+            LevelNode currentLevel = LevelNodeExtensions.FromString(System.S);
+            if (selectedLevel <= currentLevel)
+            {
+                MessageBox.Show("Желаемый уровень уже достигнут. Выберите уровень выше.");
+                return;
+            }
+            var recommendations = System.CalcRecommendations(SelectedLevel).Select(r => $"{r.Description} ({r.Id}) увеличьте на {r.Inc:F2}").ToList();
             var window = new RecommendationsWindow();
             window.DataContext = new RecommendationsViewModel(window, recommendations);
             window.ShowDialog();

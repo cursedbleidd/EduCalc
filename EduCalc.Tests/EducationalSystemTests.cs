@@ -116,11 +116,11 @@ namespace EduCalc.Tests
 
             var hold = Y.GetRecomendations(80);
 
-            var arr = hold.Values.ToArray();
+            var arr = hold.ToArray();
 
-            var sum = 0.33 * (arr[0].Inc + arr[0].Value + 0.25 * (arr[1].Inc + arr[1].Value + arr[2].Inc + arr[2].Value + arr[3].Inc + arr[3].Value + arr[4].Inc + arr[4].Value) + arr[5].Inc + arr[5].Value);
+            var sum = 0.33 * (0.25 * (arr[0].Inc + arr[0].Value + arr[1].Inc + arr[1].Value + arr[2].Inc + arr[2].Value + arr[3].Inc + arr[3].Value) + arr[4].Inc + arr[4].Value + arr[5].Inc + arr[5].Value);
             //old
-            Assert.That(system.Y, Is.EqualTo(60.23).Within(0.01));
+            Assert.That(system.Y, Is.EqualTo(70.15).Within(0.01));
         }
 
         [Test]
