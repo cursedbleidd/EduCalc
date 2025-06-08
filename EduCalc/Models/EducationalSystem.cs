@@ -587,14 +587,18 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
     public double Y => _root.Children[3].CalculatedValue;
     public string S => DetermineS();
 
-    public List<Recommend> CalcRecommendations(string targetLevel)
+    public List<Recommend> CalcRecommendations(LevelNode targetLevel)
     {
         List<Recommend> recommendations = new List<Recommend>();
         
         List<TreeNode> nodes = [_root.Children[0], _root.Children[1], _root.Children[2]];
         switch (targetLevel)
         {
-            case "Высокий":
+            case LevelNode.Max:
+                nodes.Add(_root.Children[3]);
+                recommendations.AddRange(CalcAll(100, nodes.Where(n => n.CalculatedValue < 100).ToList()));
+                break;
+            case LevelNode.High:
                 if (Y < 80)
                     recommendations.AddRange(_root.Children[3].GetRecomendations(80));
                 var topNodes = nodes.Where(n => n.CalculatedValue < 80).OrderByDescending(n => n.CalculatedValue);
@@ -610,19 +614,19 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
                         recommendations.AddRange(topNodes.Last().GetRecomendations(60));
                 }
                 break;                    
-            case "Выше среднего":
+            case LevelNode.AboveAverage:
                 nodes.Add(_root.Children[3]);
-                recommendations.AddRange(CalcAll(60, nodes));
+                recommendations.AddRange(CalcAll(60, nodes.Where(n => n.CalculatedValue < 60).ToList()));
                 break;
-            case "Средний":
+            case LevelNode.Average:
                 nodes.Add(_root.Children[3]);
-                recommendations.AddRange(CalcAll(40, nodes));
+                recommendations.AddRange(CalcAll(40, nodes.Where(n => n.CalculatedValue < 40).ToList()));
                 break;
-            case "Ниже среднего":
+            case LevelNode.BelowAverage:
                 nodes.Add(_root.Children[3]);
-                recommendations.AddRange(CalcAll(20, nodes));
+                recommendations.AddRange(CalcAll(20, nodes.Where(n => n.CalculatedValue < 20).ToList()));
                 break;
-            case "Низкий":
+            case LevelNode.Low:
                 break;
         }
 

@@ -17,6 +17,7 @@ namespace EduCalc.Models
                 LevelNode.Average => "Средний",
                 LevelNode.AboveAverage => "Выше среднего",
                 LevelNode.High => "Высокий",
+                LevelNode.Max => "Максимальный",
                 _ => throw new ArgumentOutOfRangeException(nameof(level), level, null)
             };
         }
@@ -34,6 +35,7 @@ namespace EduCalc.Models
                 "Средний" => LevelNode.Average,
                 "Выше среднего" => LevelNode.AboveAverage,
                 "Высокий" => LevelNode.High,
+                "Максимальный" => LevelNode.Max,
                 _ => throw new ArgumentException("Неизвестный уровень образования.", nameof(level))
             };
         }

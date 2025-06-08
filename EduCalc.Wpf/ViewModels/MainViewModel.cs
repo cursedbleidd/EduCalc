@@ -71,7 +71,7 @@ namespace EduCalc.ViewModels
                 MessageBox.Show("Желаемый уровень уже достигнут. Выберите уровень выше.");
                 return;
             }
-            var recommendations = System.CalcRecommendations(SelectedLevel).Select(r => $"{r.Description} ({r.Id}) увеличьте на {r.Inc:F2}").ToList();
+            var recommendations = System.CalcRecommendations(selectedLevel).Select(r => $"{r.Description} ({r.Id}) увеличьте на {r.Inc:F2}").ToList();
             var window = new RecommendationsWindow();
             window.DataContext = new RecommendationsViewModel(window, recommendations);
             window.ShowDialog();

@@ -12,6 +12,7 @@ namespace EduCalc.Models
         BelowAverage = 20,
         Average = 40,
         AboveAverage = 60,
-        High = 80
+        High = 80,
+        Max = 100
     }
 }
