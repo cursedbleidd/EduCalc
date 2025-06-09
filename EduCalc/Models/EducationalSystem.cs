@@ -596,7 +596,7 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         {
             case LevelNode.Max:
                 nodes.Add(_root.Children[3]);
-                recommendations.AddRange(CalcAll(100, nodes.Where(n => n.CalculatedValue < 100).ToList()));
+                recommendations.AddRange(CalcAll(100, nodes));
                 break;
             case LevelNode.High:
                 if (Y < 80)
@@ -616,15 +616,15 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
                 break;                    
             case LevelNode.AboveAverage:
                 nodes.Add(_root.Children[3]);
-                recommendations.AddRange(CalcAll(60, nodes.Where(n => n.CalculatedValue < 60).ToList()));
+                recommendations.AddRange(CalcAll(60, nodes));
                 break;
             case LevelNode.Average:
                 nodes.Add(_root.Children[3]);
-                recommendations.AddRange(CalcAll(40, nodes.Where(n => n.CalculatedValue < 40).ToList()));
+                recommendations.AddRange(CalcAll(40, nodes));
                 break;
             case LevelNode.BelowAverage:
                 nodes.Add(_root.Children[3]);
-                recommendations.AddRange(CalcAll(20, nodes.Where(n => n.CalculatedValue < 20).ToList()));
+                recommendations.AddRange(CalcAll(20, nodes));
                 break;
             case LevelNode.Low:
                 break;
@@ -632,7 +632,8 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
 
         return recommendations;
     }
-    public List<Recommend> CalcAll(double targetScore, List<TreeNode> nodes) => nodes.SelectMany(n => n.GetRecomendations(targetScore)).ToList();
+    public List<Recommend> CalcAll(double targetScore, List<TreeNode> nodes)
+    => nodes.Where(n => n.CalculatedValue < targetScore).SelectMany(n => n.GetRecomendations(targetScore)).ToList();
 
     private string DetermineS()
     {
