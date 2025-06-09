@@ -14,7 +14,7 @@ namespace EduCalc.ViewModels
     {
         private EducationalSystem _system = new();
         public ObservableCollection<string> Levels { get; set; } = [
-            "Ниже среднего", "Средний", "Выше среднего", "Высокий"
+            "Ниже среднего", "Средний", "Выше среднего", "Высокий", "Максимальный"
         ];
         private string _selectedLevel;
         public string SelectedLevel 
@@ -64,7 +64,16 @@ namespace EduCalc.ViewModels
 
         private void ShowRecommendations()
         {
-            LevelNode selectedLevel = LevelNodeExtensions.FromString(SelectedLevel);
+            LevelNode selectedLevel;
+            try
+            {
+                selectedLevel = LevelNodeExtensions.FromString(SelectedLevel);
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show("Выберите желаемый уровень");
+                return;
+            }
             LevelNode currentLevel = LevelNodeExtensions.FromString(System.S);
             if (selectedLevel <= currentLevel)
             {
