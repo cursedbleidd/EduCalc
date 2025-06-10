@@ -13,8 +13,8 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
     private readonly CompositeNode _root;
     
     public CompositeNode Root => _root;
-    public event PropertyChangedEventHandler PropertyChanged;
-    public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
+    public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
     
     public bool HasErrors => _errors.Any();
 
@@ -32,9 +32,12 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         var f2Node = new CompositeNode("f2", new[] { 0.25, 0.5, 0.25 });
 
         // Листья для f1
-        var totalAreaPerStudent = new TreeNode("TotalAreaPerStudent", "f11", "Площадь здания на ученика", () => TotalArea / StudentCount * 4);
-        var computerPerStudent = new TreeNode("ComputerPerStudent", "f12", "Компьютеров на 300 учеников", () => (ComputerCount / (double)StudentCount) * 300);
-        var bookPerStudent = new TreeNode("BookPerStudent", "f13", "Книг на ученика", () => Math.Min((BookCount / (double)StudentCount) * 100, 100));
+        var totalAreaPerStudent = new TreeNode("TotalAreaPerStudent", "f11", "Площадь здания на ученика",
+            () => StudentCount == 0 ? .0 : TotalArea / StudentCount * 4);
+        var computerPerStudent = new TreeNode("ComputerPerStudent", "f12", "Компьютеров на 300 учеников",
+            () => StudentCount == 0 ? .0 : (ComputerCount / (double)StudentCount) * 300);
+        var bookPerStudent = new TreeNode("BookPerStudent", "f13", "Книг на ученика",
+            () => StudentCount == 0 ? .0 : Math.Min((BookCount / (double)StudentCount) * 100, 100));
 
         f1Node.Children.Add(totalAreaPerStudent);
         f1Node.Children.Add(computerPerStudent);
@@ -45,6 +48,8 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         var certifiedTeachers = new TreeNode("CertifiedTeachers", "f22", "Процент аттестованных учителей", () => CertifiedTeachers);
         var teachersAge = new TreeNode("TeachersAge", "f23", "Возрастной показатель учителей",() => {
             double total = JuniorTeachers + MidCareerTeachers + SeniorTeachers;
+            if (total == 0)
+                return .0;
             return 100 - (Math.Abs(MidCareerTeachers - JuniorTeachers) / total) * 100
                      - (Math.Abs(MidCareerTeachers - SeniorTeachers) / total) * 100;
         });
@@ -70,8 +75,8 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         examScores.Children.Add(egeCore);
         examScores.Children.Add(egeOptional);
 
-        var honors = new TreeNode("Honors", "g2", "Показатель отличников", () => 
-            (HonorsGraduates / (double)TotalGraduates) * 100 * 5);
+        var honors = new TreeNode("Honors", "g2", "Показатель отличников",
+            () => TotalGraduates == 0 ? .0 : (HonorsGraduates / (double)TotalGraduates) * 100 * 5);
         var capacity = new TreeNode("Capacity", "g3", "Показатель переполнения", () => 
             ExcessPercent == 0 ? 100 : 100 - ExcessPercent);
         var profile = new TreeNode("Profile", "g4", "Показатель профильного образования", () => {
@@ -592,39 +597,36 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         List<Recommend> recommendations = new List<Recommend>();
         
         List<TreeNode> nodes = [_root.Children[0], _root.Children[1], _root.Children[2]];
+        TreeNode nodeY = _root.Children[3];
         switch (targetLevel)
         {
             case LevelNode.Max:
-                nodes.Add(_root.Children[3]);
-                recommendations.AddRange(CalcAll(100, nodes));
+                nodes.Add(nodeY);
+                recommendations.AddRange(CalcAll(targetLevel, nodes));
                 break;
             case LevelNode.High:
-                if (Y < 80)
-                    recommendations.AddRange(_root.Children[3].GetRecomendations(80));
-                var topNodes = nodes.Where(n => n.CalculatedValue < 80).OrderByDescending(n => n.CalculatedValue);
-                var aboveAvg = nodes.Count(n => n.CalculatedValue >= 60);
-                var avg = nodes.Count(n => n.CalculatedValue < 60);
-                if (!(aboveAvg <= 1 && avg == 0))
-                {
-                    foreach (var node in topNodes.Take(aboveAvg + avg - 1))
-                    {
-                        recommendations.AddRange(node.GetRecomendations(80));
-                    }
-                    if (topNodes.Last().CalculatedValue < 60)
-                        recommendations.AddRange(topNodes.Last().GetRecomendations(60));
-                }
+                if (nodeY.CalculatedValue < LevelNode.High.ToValue())
+                    recommendations.AddRange(nodeY.GetRecomendations(LevelNode.High.ToValue()));
+                recommendations.AddRange(ConditionalCalc(nodes, targetLevel));
                 break;                    
             case LevelNode.AboveAverage:
-                nodes.Add(_root.Children[3]);
-                recommendations.AddRange(CalcAll(60, nodes));
-                break;
             case LevelNode.Average:
-                nodes.Add(_root.Children[3]);
-                recommendations.AddRange(CalcAll(40, nodes));
+                LevelNode lowerLevel = targetLevel.Lower();
+                if (nodeY.CalculatedValue >= targetLevel.ToValue())
+                {
+                    recommendations.AddRange(ConditionalCalc(nodes, targetLevel));
+                }
+                else
+                {
+                    if (nodeY.CalculatedValue < lowerLevel.ToValue())
+                    {
+                        recommendations.AddRange(nodeY.GetRecomendations(lowerLevel.ToValue()));
+                    }
+                    recommendations.AddRange(CalcAll(targetLevel, nodes));
+                }
                 break;
             case LevelNode.BelowAverage:
-                nodes.Add(_root.Children[3]);
-                recommendations.AddRange(CalcAll(20, nodes));
+                recommendations.AddRange(ConditionalCalc(nodes, LevelNode.BelowAverage));
                 break;
             case LevelNode.Low:
                 break;
@@ -632,8 +634,28 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
 
         return recommendations;
     }
-    public List<Recommend> CalcAll(double targetScore, List<TreeNode> nodes)
-    => nodes.Where(n => n.CalculatedValue < targetScore).SelectMany(n => n.GetRecomendations(targetScore)).ToList();
+    public List<Recommend> CalcAll(LevelNode targetScore, List<TreeNode> nodes)
+    => nodes.Where(n => n.CalculatedValue < targetScore.ToValue()).SelectMany(n => n.GetRecomendations(targetScore.ToValue())).ToList();
+
+    public List<Recommend> ConditionalCalc(List<TreeNode> nodes, LevelNode targetLevel)
+    {
+        LevelNode lowerLevel = targetLevel.Lower();
+        List<Recommend> recommendations = new();
+        var topNodes = nodes.Where(n => n.CalculatedValue < targetLevel.ToValue()).OrderByDescending(n => n.CalculatedValue);
+        var aboveAvg = nodes.Count(n => n.CalculatedValue >= lowerLevel.ToValue());
+        var avg = nodes.Count(n => n.CalculatedValue < lowerLevel.ToValue());
+
+        if (!(aboveAvg <= 1 && avg == 0))
+        {
+            foreach (var node in topNodes.Take(aboveAvg + avg - 1))
+            {
+                recommendations.AddRange(node.GetRecomendations(targetLevel.ToValue()));
+            }
+            if (topNodes.Last().CalculatedValue < lowerLevel.ToValue())
+                recommendations.AddRange(topNodes.Last().GetRecomendations(lowerLevel.ToValue()));
+        }
+        return recommendations;
+    }
 
     private string DetermineS()
     {
@@ -651,19 +673,19 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
 
         foreach (var val in new[] { F, G, H })
         {
-            if (val >= 80) countFghHigh++;
-            else if (val >= 60) countFghAboveAvg++;
-            else if (val >= 40) countFghAvg++;
-            else if (val >= 20) countFghBelowAvg++;
+            if (val < 20) countFghBelowAvg++;
+            if (val < 40) countFghAvg++;
+            if (val < 60) countFghAboveAvg++;
+            if (val < 80) countFghHigh++;
         }
 
-        if (yHigh && countFghHigh >= 2)
+        if (yHigh && countFghHigh <= 1 && countFghAboveAvg == 0)
             return "Высокий";
-        if ((yHigh || yAboveAvg) && countFghAboveAvg >= 2)
+        if ((yAboveAvg && countFghAboveAvg <= 1 && countFghAvg == 0) || (yAvg && countFghAboveAvg == 0))
             return "Выше среднего";
-        if ((yHigh || yAboveAvg || yAvg) && countFghAvg >= 2)
+        if ((yAvg && countFghAvg <= 1 && countFghBelowAvg == 0) || (yBelowAvg && countFghAvg == 0))
             return "Средний";
-        if ((yBelowAvg && countFghAvg == 0) || countFghBelowAvg == 1)
+        if (countFghBelowAvg <= 1)
             return "Ниже среднего";
         return "Низкий";
     }
@@ -694,7 +716,7 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
 
     public IEnumerable GetErrors(string propertyName)
     {
-        if (_errors.TryGetValue(propertyName, out List<string> errors))
+        if (_errors.TryGetValue(propertyName, out List<string>? errors))
             return errors;
         return Enumerable.Empty<string>();
     }
@@ -716,6 +738,6 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
     }
 
-    protected void OnPropertyChanged([CallerMemberName] string name = null) =>
+    protected void OnPropertyChanged([CallerMemberName] string? name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

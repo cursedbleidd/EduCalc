@@ -23,13 +23,17 @@ namespace EduCalc.Tests
                 MidCareerTeachers = 23,
                 SeniorTeachers = 19
             };
-            //new
-            var F = system.Root.Children.First(c => c.Name == "F");
+            
+            TreeNode F = system.Root.Children.First(c => c.Name == "F");
 
-            var hold = F.GetRecomendations(80);
+            LevelNode target = LevelNode.High;
 
-            //old
+            List<Recommend> recommends = F.GetRecomendations(target.ToValue());
+
+
             Assert.That(system.F, Is.EqualTo(66.57).Within(0.01));
+            Assert.That(recommends.Sum(r => r.Inc * r.Coef) + F.CalculatedValue, Is.EqualTo(target.ToValue()).Within(0.01));
+
         }
 
         [Test]
@@ -47,13 +51,13 @@ namespace EduCalc.Tests
                 ProfileSeniors = 100,
                 AdvancedJuniors = 0
             };
-            //new
-            var G = system.Root.Children.First(c => c.Name == "G");
+            
+            TreeNode G = system.Root.Children.First(c => c.Name == "G");
+            LevelNode target = LevelNode.AboveAverage;
+            List<Recommend> recommends = G.GetRecomendations(target.ToValue());
 
-            var hold = G.GetRecomendations(60);
-
-            //old
             Assert.That(system.G, Is.EqualTo(57.65).Within(0.01));
+            Assert.That(recommends.Sum(r => r.Inc * r.Coef) + G.CalculatedValue, Is.EqualTo(target.ToValue()).Within(0.01));
         }
 
         [Test]
@@ -68,13 +72,13 @@ namespace EduCalc.Tests
                 CareerGuidance = 89.83,
                 ProjectWork = 4.99
             };
-            //new
-            var H = system.Root.Children.First(c => c.Name == "H");
+            
+            TreeNode H = system.Root.Children.First(c => c.Name == "H");
+            LevelNode target = LevelNode.High;
+            List<Recommend> recommends = H.GetRecomendations(target.ToValue());
 
-            var hold = H.GetRecomendations(80);
-
-            //old
             Assert.That(system.H, Is.EqualTo(68.61).Within(0.01));
+            Assert.That(recommends.Sum(r => r.Inc * r.Coef) + H.CalculatedValue, Is.EqualTo(target.ToValue()).Within(0.01));
         }
 
         [Test]
@@ -90,13 +94,13 @@ namespace EduCalc.Tests
                 Creativity = 66.87,
                 Logic = 65.9
             };
-            //new
-            var Y = system.Root.Children.First(c => c.Name == "Y");
-
-            var hold = Y.GetRecomendations(80);
-
-            //old
+            
+            TreeNode Y = system.Root.Children.First(c => c.Name == "Y");
+            LevelNode target = LevelNode.High;
+            List<Recommend> recommends = Y.GetRecomendations(target.ToValue());
+            
             Assert.That(system.Y, Is.EqualTo(60.23).Within(0.01));
+            Assert.That(recommends.Sum(r => r.Inc * r.Coef) + Y.CalculatedValue, Is.EqualTo(target.ToValue()).Within(0.01));
         }
         [Test]
         public void CalculateY_ReturnsCorrectValue2()
@@ -111,16 +115,13 @@ namespace EduCalc.Tests
                 Creativity = 66.87,
                 Logic = 96.0
             };
-            //new
-            var Y = system.Root.Children.First(c => c.Name == "Y");
+            
+            TreeNode Y = system.Root.Children.First(c => c.Name == "Y");
+            LevelNode target = LevelNode.High;
+            List<Recommend> recommends = Y.GetRecomendations(target.ToValue());
 
-            var hold = Y.GetRecomendations(80);
-
-            var arr = hold.ToArray();
-
-            var sum = 0.33 * (0.25 * (arr[0].Inc + arr[0].Value + arr[1].Inc + arr[1].Value + arr[2].Inc + arr[2].Value + arr[3].Inc + arr[3].Value) + arr[4].Inc + arr[4].Value + arr[5].Inc + arr[5].Value);
-            //old
             Assert.That(system.Y, Is.EqualTo(70.15).Within(0.01));
+            Assert.That(recommends.Sum(r => r.Inc * r.Coef) + Y.CalculatedValue, Is.EqualTo(target.ToValue()).Within(0.01));
         }
 
         [Test]
@@ -128,7 +129,6 @@ namespace EduCalc.Tests
         {
             var system = new EducationalSystem
             {
-                // Установим значения из примера статьи
                 ShortTermMemory = 45.56,
                 ProceduralMemory = 54.8,
                 SemanticMemory = 48.68,
@@ -165,6 +165,8 @@ namespace EduCalc.Tests
             };
 
             Assert.That(system.S, Is.EqualTo("Выше среднего"));
+
+            //Assert.That(system.CalcRecommendations(LevelNode.High).Sum(r => r.Inc * r.Coef), Is.EqualTo(LevelNode.High.ToValue()).Within(0.01));
         }
 
         [Test]
