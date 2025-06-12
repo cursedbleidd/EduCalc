@@ -21,6 +21,7 @@
         <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody1TextBlock}" />
         <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}" />
         <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignSwitchToggleButton}" />
+        <!--<Style TargetType="TabControl" BasedOn="{StaticResource MaterialDesignFilledTabControl}"/>-->
         <viewModel:MainViewModel x:Key="MainViewModel" />
     </Window.Resources>
     <Window.DataContext>
@@ -207,11 +208,11 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Text="Победители ВСОШ:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Победители ВСОШ (8-11):" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
                                 <TextBox Text="{Binding System.VSOHWinners, UpdateSourceTrigger=PropertyChanged}" 
                                          Grid.Row="0" Grid.Column="1"/>
 
-                                <TextBlock Text="Старшеклассники:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Участники ВСОШ (8-11):" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
                                 <TextBox Text="{Binding System.SeniorStudents, UpdateSourceTrigger=PropertyChanged}" 
                                          Grid.Row="1" Grid.Column="1"/>
 
@@ -352,6 +353,6 @@
                    Style="{StaticResource MaterialDesignTitleMediumTextBlock}"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Bottom"
-                   Margin="16,0,16,40"/>
+                   Margin="8"/>
     </Grid>
 </Window>

@@ -171,6 +171,50 @@ namespace EduCalc.Tests
 
             //Assert.That(system.CalcRecommendations(LevelNode.High).Sum(r => r.Inc * r.Coef), Is.EqualTo(LevelNode.High.ToValue()).Within(0.01));
         }
+        [Test]
+        public void DetermineS_ReturnsCorrectLevel2()
+        {
+            var system = new EducationalSystem
+            {
+                ShortTermMemory = 45.56,
+                ProceduralMemory = 54.8,
+                SemanticMemory = 48.68,
+                EpisodicMemory = 49.86,
+                Creativity = 66.87,
+                Logic = 65.9,
+
+                TotalArea = 7415,
+                StudentCount = 2735,
+                ComputerCount = 319,
+                BookCount = 65459,
+                TeachersWithHigherEdu = 79 / 109,
+                CertifiedTeachers = 60 / 109,
+                JuniorTeachers = 46,
+                MidCareerTeachers = 23,
+                SeniorTeachers = 19,
+
+                OGECoreAvg = 49.1,
+                OGEOptionalAvg = 16,
+                EGECoreAvg = 57.8,
+                EGEOptionalAvg = 61.5,
+                HonorsGraduates = 4,
+                TotalGraduates = 216,
+                ExcessPercent = 0,
+                ProfileSeniors = 100,
+                AdvancedJuniors = 0,
+
+                VSOHWinners = 21,
+                SeniorStudents = 250,
+                DigitalClubs = .0,
+                AdditionalEdu = 100,
+                CareerGuidance = 89.83,
+                ProjectWork = 4.99
+            };
+
+            Assert.That(system.S, Is.EqualTo("Выше среднего"));
+
+            //Assert.That(system.CalcRecommendations(LevelNode.High).Sum(r => r.Inc * r.Coef), Is.EqualTo(LevelNode.High.ToValue()).Within(0.01));
+        }
 
         [Test]
         public void ValidateNegativeTotalArea_ThrowsError()

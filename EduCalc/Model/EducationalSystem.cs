@@ -120,7 +120,7 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         // Компонент H (Инновационная деятельность)
         var hNode = new CompositeNode("H", new[] { 1.0 / 3, 1.0 / 3, 1.0 / 3 });
         
-        var olympiadSuccess = new TreeNode("OlympiadSuccess", "h1", "Процент победителей ВсОШ", () => 
+        var olympiadSuccess = new TreeNode("OlympiadSuccess", "h1", "Процент победителей ВсОШ (8-11)", () => 
             (VSOHWinners / (double)SeniorStudents) * 100 * 10);
         var digitalClubs = new TreeNode("DigitalClubs", "h2", "Процент вовлеченных в цифровые внеурочные активности", () => DigitalClubs);
         var additionalEdu = new TreeNode("AdditionalEdu", "h3", "Процент вовлеченных в доп образование", () => AdditionalEdu);
