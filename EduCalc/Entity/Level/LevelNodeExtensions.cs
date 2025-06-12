@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EduCalc.Models
+namespace EduCalc.Entity.Level
 {
     public static class LevelNodeExtensions
     {

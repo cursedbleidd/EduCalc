@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-namespace EduCalc.Models;
+namespace EduCalc.Entity.Tree;
 
 public class CompositeNode : TreeNode
 {
@@ -10,10 +10,10 @@ public class CompositeNode : TreeNode
     public CompositeNode(string name, double[] coefficients) : base(name)
     {
         Coefficients = coefficients;
-        _calculator = () => 
+        _calculator = () =>
         { //fix
-            //if (Children.Count != Coefficients.Length)
-               
+          //if (Children.Count != Coefficients.Length)
+
             try
             {
                 return Children.Select((child, i) => child.CalculatedValue * Coefficients[i]).Sum();

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EduCalc.Models
+namespace EduCalc.Entity
 {
     public class Recommend
     {
@@ -15,6 +15,6 @@ namespace EduCalc.Models
         public double Coef { get; set; }
         public double Value { get; set; }
 
-        public static implicit operator double(Recommend recommend) => recommend.Value;
+        public static implicit operator double(Recommend recommend) => recommend.Inc;
     }
 }

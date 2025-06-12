@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using EduCalc.Wpf.Views;
 using System.Collections.ObjectModel;
 using System.Windows;
+using EduCalc.Entity.Tree;
+using EduCalc.Entity.Level;
+using EduCalc.Entity;
 
 namespace EduCalc.ViewModels
 {
@@ -16,6 +19,7 @@ namespace EduCalc.ViewModels
         public ObservableCollection<string> Levels { get; set; } = [
             "Ниже среднего", "Средний", "Выше среднего", "Высокий", "Максимальный"
         ];
+        public ObservableCollection<InputComponentSetting> ComponentSettings { get; set; }
         private string _selectedLevel;
         public string SelectedLevel 
         { 
@@ -52,11 +56,26 @@ namespace EduCalc.ViewModels
 
         public MainViewModel()
         {
+            _system.PropertyChanged += (s, e) => 
+            {
+                OnPropertyChanged(nameof(CalculatedResults));
+            };
+            ComponentSettings = new ObservableCollection<InputComponentSetting>(_system.ComponentsSettings);
+            
+            foreach (var setting in ComponentSettings)
+            {
+                setting.PropertyChanged += (s, e) => 
+                {
+                    if (e.PropertyName == nameof(InputComponentSetting.IsIncluded))
+                    {
+                        OnPropertyChanged(nameof(CalculatedResults));
+                    }
+                };
+            }
+
             CalculateCommand = new RelayCommand(Calculate);
             ShowRecommendationsCommand = new RelayCommand(ShowRecommendations);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CalculatedResults)));
         }
-
         private void Calculate() 
         {
             OnPropertyChanged(nameof(CalculatedResults));

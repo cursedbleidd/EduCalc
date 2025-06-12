@@ -1,6 +1,9 @@
 using NUnit.Framework;
 using System;
 using EduCalc.Models;
+using EduCalc.Entity.Tree;
+using EduCalc.Entity.Level;
+using EduCalc.Entity;
 
 namespace EduCalc.Tests
 {

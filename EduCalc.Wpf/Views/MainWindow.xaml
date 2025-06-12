@@ -20,6 +20,7 @@
         <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}" />
         <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody1TextBlock}" />
         <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}" />
+        <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignSwitchToggleButton}" />
         <viewModel:MainViewModel x:Key="MainViewModel" />
     </Window.Resources>
     <Window.DataContext>
@@ -34,7 +35,7 @@
                    Margin="0,0,0,16"/>
 
         <!-- Табы с данными -->
-        <TabControl Margin="0,32,0,60">
+        <TabControl Margin="0,32,0,60" TabStripPlacement="Left">
             <!-- Таб Материальная база -->
             <TabItem Header="Материальная база">
                 <ScrollViewer Margin="16">
@@ -288,6 +289,38 @@
                                          Grid.Row="5" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="0-100%"/>
                             </Grid>
+                        </materialDesign:Card>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Таб Компоненты -->
+            <TabItem Header="Настройка рекомендаций">
+                <ScrollViewer Margin="16">
+                    <StackPanel>
+                        <materialDesign:Card Margin="0,0,0,16">
+                            <ItemsControl ItemsSource="{Binding ComponentSettings}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <ToggleButton Grid.Column="0"
+                                                      IsChecked="{Binding IsIncluded}" 
+                                                      VerticalAlignment="Center"
+                                                      HorizontalAlignment="Right"/>
+                                            
+                                            <TextBlock Grid.Column="1" 
+                                                       Text="{Binding Description}" 
+                                                       Margin="16,0,0,0"
+                                                       VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </materialDesign:Card>
                     </StackPanel>
                 </ScrollViewer>

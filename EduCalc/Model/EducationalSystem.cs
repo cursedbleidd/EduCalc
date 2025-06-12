@@ -5,6 +5,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using EduCalc.Entity;
+using EduCalc.Entity.Level;
+using EduCalc.Entity.Tree;
 
 namespace EduCalc.Models;
 public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
@@ -15,12 +18,23 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
     public CompositeNode Root => _root;
     public event PropertyChangedEventHandler? PropertyChanged;
     public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
-    
+
+    private List<InputComponentSetting> _componentsSettings;
+    public List<InputComponentSetting> ComponentsSettings
+    {
+        get => _componentsSettings;
+        set
+        {
+            _componentsSettings = value;
+            OnPropertyChanged();
+        }
+    }
     public bool HasErrors => _errors.Any();
 
     public EducationalSystem()
     {
         _root = new CompositeNode("Root", new[] { 0.25, 0.25, 0.25, 0.25 });
+        _componentsSettings = new();
         InitializeTree();
     }
 
@@ -42,6 +56,9 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         f1Node.Children.Add(totalAreaPerStudent);
         f1Node.Children.Add(computerPerStudent);
         f1Node.Children.Add(bookPerStudent);
+        ComponentsSettings.Add(totalAreaPerStudent);
+        ComponentsSettings.Add(computerPerStudent);
+        ComponentsSettings.Add(bookPerStudent);
 
         // Листья для f2
         var teachersEdu = new TreeNode("TeachersWithHigherEdu", "f21", "Процент учителей с высшим образованием", () => TeachersWithHigherEdu);
@@ -57,6 +74,9 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         f2Node.Children.Add(teachersEdu);
         f2Node.Children.Add(certifiedTeachers);
         f2Node.Children.Add(teachersAge);
+        ComponentsSettings.Add(teachersEdu);
+        ComponentsSettings.Add(certifiedTeachers);
+        ComponentsSettings.Add(teachersAge);
 
         fNode.Children.Add(f1Node);
         fNode.Children.Add(f2Node);
@@ -74,6 +94,10 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         examScores.Children.Add(ogeOptional);
         examScores.Children.Add(egeCore);
         examScores.Children.Add(egeOptional);
+        ComponentsSettings.Add(ogeCore);
+        ComponentsSettings.Add(ogeOptional);
+        ComponentsSettings.Add(egeCore);
+        ComponentsSettings.Add(egeOptional);
 
         var honors = new TreeNode("Honors", "g2", "Показатель отличников",
             () => TotalGraduates == 0 ? .0 : (HonorsGraduates / (double)TotalGraduates) * 100 * 5);
@@ -85,9 +109,13 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         });
 
         gNode.Children.Add(examScores);
+
         gNode.Children.Add(honors);
         gNode.Children.Add(capacity);
         gNode.Children.Add(profile);
+        ComponentsSettings.Add(honors);
+        ComponentsSettings.Add(capacity);
+        ComponentsSettings.Add(profile);
 
         // Компонент H (Инновационная деятельность)
         var hNode = new CompositeNode("H", new[] { 1.0 / 3, 1.0 / 3, 1.0 / 3 });
@@ -101,7 +129,10 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         var arr = new[] { olympiadSuccess, digitalClubs, additionalEdu, careerGuidance, projectWork };
         // H берет три лучших показателя
         foreach (var q in arr)
+        {
             hNode.Children.Add(q);
+            ComponentsSettings.Add(q);
+        }
 
         // Компонент Y (Когнитивные способности)
         var yNode = new CompositeNode("Y", new[] { 0.33, 0.33, 0.33 });
@@ -116,13 +147,20 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         memory.Children.Add(procedural);
         memory.Children.Add(semantic);
         memory.Children.Add(episodic);
+        ComponentsSettings.Add(shortTerm);
+        ComponentsSettings.Add(procedural);
+        ComponentsSettings.Add(semantic);
+        ComponentsSettings.Add(episodic);
 
         var creativity = new TreeNode("Creativity", "y2", "Креативность", () => Creativity);
         var logic = new TreeNode("Logic", "y3", "Логика", () => Logic);
 
         yNode.Children.Add(memory);
+
         yNode.Children.Add(creativity);
         yNode.Children.Add(logic);
+        ComponentsSettings.Add(creativity);
+        ComponentsSettings.Add(logic);
 
         _root.Children.Add(fNode);
         _root.Children.Add(gNode);
@@ -634,10 +672,10 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
 
         return recommendations;
     }
-    public List<Recommend> CalcAll(LevelNode targetScore, List<TreeNode> nodes)
+    private List<Recommend> CalcAll(LevelNode targetScore, List<TreeNode> nodes)
     => nodes.Where(n => n.CalculatedValue < targetScore.ToValue()).SelectMany(n => n.GetRecomendations(targetScore.ToValue())).ToList();
 
-    public List<Recommend> ConditionalCalc(List<TreeNode> nodes, LevelNode targetLevel)
+    private List<Recommend> ConditionalCalc(List<TreeNode> nodes, LevelNode targetLevel)
     {
         LevelNode lowerLevel = targetLevel.Lower();
         List<Recommend> recommendations = new();

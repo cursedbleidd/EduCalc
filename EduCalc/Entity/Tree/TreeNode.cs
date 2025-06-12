@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Runtime.CompilerServices;
 
-namespace EduCalc.Models;
+namespace EduCalc.Entity.Tree;
 
 public class TreeNode : INotifyPropertyChanged
 {
@@ -13,7 +13,7 @@ public class TreeNode : INotifyPropertyChanged
     public string Description { get; set; }
     public string Id { get; set; }
 
-    public string Name 
+    public string Name
     {
         get => _name;
         set
@@ -34,7 +34,18 @@ public class TreeNode : INotifyPropertyChanged
         }
     }
 
-    public double CalculatedValue => _calculator?.Invoke() ?? Value;
+    public double CalculatedValue
+    {
+        get
+        {
+            double value = _calculator?.Invoke() ?? Value;
+            if (value < 0)
+                return 0;
+            if (value > 100)
+                return 100;
+            return value;
+        }
+    }
 
     public TreeNode(string name, string id = null, string desc = null, Func<double> calculator = null)
     {
@@ -44,7 +55,7 @@ public class TreeNode : INotifyPropertyChanged
         _calculator = calculator;
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
@@ -54,8 +65,8 @@ public class TreeNode : INotifyPropertyChanged
 
         if (this is not CompositeNode node)
         {
-            if (this.CalculatedValue < 100.0 && (list is null || !list.Any(r => r.Name == Name)))
-                weights.Add(new Recommend() { Name = this.Name, Id = this.Id, Description = this.Description, Coef = 1.0, Value = CalculatedValue });
+            if (CalculatedValue < 100.0 && (list is null || !list.Any(r => r.Name == Name)))
+                weights.Add(new Recommend() { Name = Name, Id = Id, Description = Description, Coef = 1.0, Value = CalculatedValue });
             return weights;
         }
 
@@ -64,7 +75,7 @@ public class TreeNode : INotifyPropertyChanged
         {
             childs = childs.OrderByDescending(c => c.CalculatedValue).ToArray();
         }
-        
+
         for (int i = 0; i < node.Coefficients.Length; i++)
         {
             var vals = childs[i].GetWeightsWithNames(list);
@@ -74,7 +85,7 @@ public class TreeNode : INotifyPropertyChanged
                 weights.Add(val);
             }
         }
-        
+
         return weights;
     }
     public List<Recommend> GetRecomendations(double targetScore)
