@@ -60,12 +60,12 @@
                                          materialDesign:HintAssist.Hint="Площадь в м²"/>
 
                                 <TextBlock Text="Количество учеников:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.StudentCount, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.StudentCount, UpdateSourceTrigger=PropertyChanged}"
                                          Grid.Row="1" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="Число учеников"/>
 
                                 <TextBlock Text="Компьютеры:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.ComputerCount, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.ComputerCount,  UpdateSourceTrigger=PropertyChanged}" 
                                          Grid.Row="2" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="Количество компьютеров"/>
 
@@ -98,25 +98,30 @@
                                 </Grid.RowDefinitions>
 
                                 <TextBlock Text="Процент педагогов с высшим образованием (%):" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.TeachersWithHigherEdu, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.TeachersWithHigherEdu, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}"
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="0" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="0-100%"/>
 
                                 <TextBlock Text="Аттестованные педагоги (%):" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.CertifiedTeachers, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.CertifiedTeachers, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}"
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="1" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="0-100%"/>
 
                                 <TextBlock Text="Молодые педагоги (&lt;35 лет):" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
                                 <TextBox Text="{Binding System.JuniorTeachers, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="2" Grid.Column="1"/>
 
                                 <TextBlock Text="Опытные педагоги (35-50 лет):" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
                                 <TextBox Text="{Binding System.MidCareerTeachers, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="3" Grid.Column="1"/>
 
                                 <TextBlock Text="Старшие педагоги (>50 лет):" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.SeniorTeachers, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.SeniorTeachers,  UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="4" Grid.Column="1"/>
                             </Grid>
                         </materialDesign:Card>
@@ -147,41 +152,48 @@
                                 </Grid.RowDefinitions>
 
                                 <TextBlock Text="Средний балл ОГЭ по основным предметам:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.OGECoreAvg, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.OGECoreAvg, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="0" Grid.Column="1"/>
 
                                 <TextBlock Text="Средний балл ОГЭ по выборочным предметам:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.OGEOptionalAvg, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.OGEOptionalAvg, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="1" Grid.Column="1"/>
 
                                 <TextBlock Text="Средний балл ЕГЭ по основным предметам:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.EGECoreAvg, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.EGECoreAvg, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="2" Grid.Column="1"/>
 
                                 <TextBlock Text="Средний балл ЕГЭ по выборочным предметам:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.EGEOptionalAvg, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.EGEOptionalAvg, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="3" Grid.Column="1"/>
 
                                 <TextBlock Text="Выпускники с отличием:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.HonorsGraduates, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.HonorsGraduates, UpdateSourceTrigger=PropertyChanged}"
                                          Grid.Row="4" Grid.Column="1"/>
 
                                 <TextBlock Text="Всего выпускников:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.TotalGraduates, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.TotalGraduates,  UpdateSourceTrigger=PropertyChanged}" 
                                          Grid.Row="5" Grid.Column="1"/>
 
                                 <TextBlock Text="Превышение нормативной наполняемости (%):" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.ExcessPercent, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.ExcessPercent, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="6" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="0-100%"/>
 
                                 <TextBlock Text="Профильное обучение старшеклассников (%):" Grid.Row="7" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.ProfileSeniors, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.ProfileSeniors, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
                                          Grid.Row="7" Grid.Column="1"
+                                         PreviewTextInput="NumberValidationTextBox"
                                          materialDesign:HintAssist.Hint="0-100%"/>
                                 <TextBlock Text="Углубленное изучение предметов (%) (5-9 кл.):" Grid.Row="8" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.AdvancedJuniors, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.AdvancedJuniors, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
                                          Grid.Row="8" Grid.Column="1"
+                                         PreviewTextInput="NumberValidationTextBox"
                                          materialDesign:HintAssist.Hint="0-100%"/>
                             </Grid>
                         </materialDesign:Card>
@@ -217,22 +229,26 @@
                                          Grid.Row="1" Grid.Column="1"/>
 
                                 <TextBlock Text="Цифровые внеурочные активности (%):" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.DigitalClubs, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.DigitalClubs, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="2" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="0-100%"/>
 
                                 <TextBlock Text="Дополнительное образование (%):" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.AdditionalEdu, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.AdditionalEdu, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="3" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="0-100%"/>
 
                                 <TextBlock Text="Профориентационные мероприятия (%):" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.CareerGuidance, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.CareerGuidance, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="4" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="0-100%"/>
 
                                 <TextBlock Text="Проектная деятельность (%):" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.ProjectWork, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.ProjectWork, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="5" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="0-100%"/>
                             </Grid>
@@ -261,32 +277,38 @@
                                 </Grid.RowDefinitions>
 
                                 <TextBlock Text="Краткосрочная память:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.ShortTermMemory, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.ShortTermMemory, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="0" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="0-100%"/>
 
                                 <TextBlock Text="Процессуальная память:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.ProceduralMemory, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.ProceduralMemory, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="1" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="0-100%"/>
 
                                 <TextBlock Text="Семантическая память:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.SemanticMemory, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.SemanticMemory, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="2" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="0-100%"/>
 
                                 <TextBlock Text="Эпизодическая память:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.EpisodicMemory, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.EpisodicMemory, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="3" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="0-100%"/>
 
                                 <TextBlock Text="Креативность:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.Creativity, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.Creativity, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="4" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="0-100%"/>
 
                                 <TextBlock Text="Логическое мышление:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding System.Logic, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding System.Logic, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}" 
+                                         PreviewTextInput="NumberValidationTextBox"
                                          Grid.Row="5" Grid.Column="1"
                                          materialDesign:HintAssist.Hint="0-100%"/>
                             </Grid>

@@ -10,6 +10,7 @@ namespace EduCalc.Tests
     [TestFixture]
     public class EducationalSystemTests
     {
+        private readonly List<InputComponentSetting> settings = new();
         [Test]
         public void CalculateF_ReturnsCorrectValue()
         {
@@ -31,14 +32,61 @@ namespace EduCalc.Tests
 
             LevelNode target = LevelNode.High;
 
-            List<Recommend> recommends = F.GetRecomendations(target.ToValue());
+            List<Recommend> recommends = F.GetRecomendations(target.ToValue(), settings);
 
 
             Assert.That(system.F, Is.EqualTo(66.57).Within(0.01));
             Assert.That(recommends.Sum(r => r.Inc * r.Coef) + F.CalculatedValue, Is.EqualTo(target.ToValue()).Within(0.01));
 
         }
+        [Test]
+        public void CalculateF_ComponentSettings()
+        {
+            var system = new EducationalSystem
+            {
+                TotalArea = 17666,
+                StudentCount = 1226,
+                ComputerCount = 228,
+                BookCount = 32878,
 
+                TeachersWithHigherEdu = 75.41,
+                CertifiedTeachers = 44.26,
+                JuniorTeachers = 19,
+                MidCareerTeachers = 23,
+                SeniorTeachers = 19
+            };
+
+            TreeNode F = system.Root.Children.First(c => c.Name == "F");
+
+            LevelNode target = LevelNode.High;
+
+            InputComponentSetting setting = new("f11", "", false);
+
+            List<Recommend> recommends = F.GetRecomendations(target.ToValue(), new List<InputComponentSetting>() { setting });
+
+
+            Assert.That(system.F, Is.EqualTo(66.57).Within(0.01));
+            Assert.That(recommends.Sum(r => r.Inc * r.Coef) + F.CalculatedValue, Is.EqualTo(target.ToValue()).Within(0.01));
+
+        }
+        [Test]
+        public void CalculateF_Empty()
+        {
+            var system = new EducationalSystem();
+
+            TreeNode F = system.Root.Children.First(c => c.Name == "F");
+
+            LevelNode target = LevelNode.High;
+
+            InputComponentSetting setting = new("f11", "", false);
+
+            List<Recommend> recommends = F.GetRecomendations(target.ToValue(), new List<InputComponentSetting> { setting });
+
+
+            Assert.That(system.F, Is.EqualTo(.0).Within(0.01));
+            Assert.That(recommends.Sum(r => r.Inc * r.Coef) + F.CalculatedValue, Is.EqualTo(target.ToValue()).Within(0.01));
+
+        }
         [Test]
         public void CalculateG_ReturnsCorrectValue()
         {
@@ -57,7 +105,7 @@ namespace EduCalc.Tests
             
             TreeNode G = system.Root.Children.First(c => c.Name == "G");
             LevelNode target = LevelNode.AboveAverage;
-            List<Recommend> recommends = G.GetRecomendations(target.ToValue());
+            List<Recommend> recommends = G.GetRecomendations(target.ToValue(), settings);
 
             Assert.That(system.G, Is.EqualTo(57.65).Within(0.01));
             Assert.That(recommends.Sum(r => r.Inc * r.Coef) + G.CalculatedValue, Is.EqualTo(target.ToValue()).Within(0.01));
@@ -78,7 +126,7 @@ namespace EduCalc.Tests
             
             TreeNode H = system.Root.Children.First(c => c.Name == "H");
             LevelNode target = LevelNode.High;
-            List<Recommend> recommends = H.GetRecomendations(target.ToValue());
+            List<Recommend> recommends = H.GetRecomendations(target.ToValue(), settings);
 
             Assert.That(system.H, Is.EqualTo(68.61).Within(0.01));
             Assert.That(recommends.Sum(r => r.Inc * r.Coef) + H.CalculatedValue, Is.EqualTo(target.ToValue()).Within(0.01));
@@ -100,9 +148,22 @@ namespace EduCalc.Tests
             
             TreeNode Y = system.Root.Children.First(c => c.Name == "Y");
             LevelNode target = LevelNode.High;
-            List<Recommend> recommends = Y.GetRecomendations(target.ToValue());
+            List<Recommend> recommends = Y.GetRecomendations(target.ToValue(), settings);
             
             Assert.That(system.Y, Is.EqualTo(60.23).Within(0.01));
+            Assert.That(recommends.Sum(r => r.Inc * r.Coef) + Y.CalculatedValue, Is.EqualTo(target.ToValue()).Within(0.01));
+        }
+        [Test]
+        public void CalculateY_Empty()
+        {
+            //old
+            var system = new EducationalSystem();
+
+            TreeNode Y = system.Root.Children.First(c => c.Name == "Y");
+            LevelNode target = LevelNode.High;
+            List<Recommend> recommends = Y.GetRecomendations(target.ToValue(), settings);
+
+            Assert.That(system.Y, Is.EqualTo(.0).Within(0.01));
             Assert.That(recommends.Sum(r => r.Inc * r.Coef) + Y.CalculatedValue, Is.EqualTo(target.ToValue()).Within(0.01));
         }
         [Test]
@@ -121,7 +182,7 @@ namespace EduCalc.Tests
             
             TreeNode Y = system.Root.Children.First(c => c.Name == "Y");
             LevelNode target = LevelNode.High;
-            List<Recommend> recommends = Y.GetRecomendations(target.ToValue());
+            List<Recommend> recommends = Y.GetRecomendations(target.ToValue(), settings);
 
             Assert.That(system.Y, Is.EqualTo(70.15).Within(0.01));
             Assert.That(recommends.Sum(r => r.Inc * r.Coef) + Y.CalculatedValue, Is.EqualTo(target.ToValue()).Within(0.01));

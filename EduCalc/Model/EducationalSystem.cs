@@ -644,7 +644,7 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
                 break;
             case LevelNode.High:
                 if (nodeY.CalculatedValue < LevelNode.High.ToValue())
-                    recommendations.AddRange(nodeY.GetRecomendations(LevelNode.High.ToValue()));
+                    recommendations.AddRange(nodeY.GetRecomendations(LevelNode.High.ToValue(), ComponentsSettings));
                 recommendations.AddRange(ConditionalCalc(nodes, targetLevel));
                 break;                    
             case LevelNode.AboveAverage:
@@ -658,7 +658,7 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
                 {
                     if (nodeY.CalculatedValue < lowerLevel.ToValue())
                     {
-                        recommendations.AddRange(nodeY.GetRecomendations(lowerLevel.ToValue()));
+                        recommendations.AddRange(nodeY.GetRecomendations(lowerLevel.ToValue(), ComponentsSettings));
                     }
                     recommendations.AddRange(CalcAll(targetLevel, nodes));
                 }
@@ -673,7 +673,7 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         return recommendations;
     }
     private List<Recommend> CalcAll(LevelNode targetScore, List<TreeNode> nodes)
-    => nodes.Where(n => n.CalculatedValue < targetScore.ToValue()).SelectMany(n => n.GetRecomendations(targetScore.ToValue())).ToList();
+    => nodes.Where(n => n.CalculatedValue < targetScore.ToValue()).SelectMany(n => n.GetRecomendations(targetScore.ToValue(), ComponentsSettings)).ToList();
 
     private List<Recommend> ConditionalCalc(List<TreeNode> nodes, LevelNode targetLevel)
     {
@@ -687,10 +687,10 @@ public class EducationalSystem : INotifyPropertyChanged, INotifyDataErrorInfo
         {
             foreach (var node in topNodes.Take(aboveAvg + avg - 1))
             {
-                recommendations.AddRange(node.GetRecomendations(targetLevel.ToValue()));
+                recommendations.AddRange(node.GetRecomendations(targetLevel.ToValue(), ComponentsSettings));
             }
             if (topNodes.Last().CalculatedValue < lowerLevel.ToValue())
-                recommendations.AddRange(topNodes.Last().GetRecomendations(lowerLevel.ToValue()));
+                recommendations.AddRange(topNodes.Last().GetRecomendations(lowerLevel.ToValue(), ComponentsSettings));
         }
         return recommendations;
     }
